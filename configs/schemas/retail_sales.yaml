@@ -1,3 +1,86 @@
 schema_family: retail_sales
 version: v1
 description: Orders, customers, products, and payments for transactional analytics.
+seed_hints:
+  - customer order history
+  - product category performance
+  - payment completion status
+tables:
+  - name: customers
+    description: Customer dimension table with account metadata.
+    primary_key: customer_id
+    columns:
+      - name: customer_id
+        data_type: integer
+        value_strategy: sequential_id
+      - name: customer_name
+        data_type: text
+        value_strategy: full_name
+      - name: segment
+        data_type: text
+        value_strategy: category_label
+      - name: signup_date
+        data_type: date
+        value_strategy: date_recent_years
+  - name: orders
+    description: Order facts at the transaction level.
+    primary_key: order_id
+    columns:
+      - name: order_id
+        data_type: integer
+        value_strategy: sequential_id
+      - name: customer_id
+        data_type: integer
+        value_strategy: foreign_key
+      - name: order_date
+        data_type: date
+        value_strategy: date_recent_years
+      - name: order_total
+        data_type: decimal
+        value_strategy: monetary_amount
+      - name: status
+        data_type: text
+        value_strategy: order_status
+    foreign_keys:
+      - column: customer_id
+        references_table: customers
+        references_column: customer_id
+  - name: payments
+    description: Payment events associated with orders.
+    primary_key: payment_id
+    columns:
+      - name: payment_id
+        data_type: integer
+        value_strategy: sequential_id
+      - name: order_id
+        data_type: integer
+        value_strategy: foreign_key
+      - name: payment_method
+        data_type: text
+        value_strategy: payment_method
+      - name: payment_amount
+        data_type: decimal
+        value_strategy: monetary_amount
+      - name: payment_status
+        data_type: text
+        value_strategy: payment_status
+    foreign_keys:
+      - column: order_id
+        references_table: orders
+        references_column: order_id
+  - name: products
+    description: Product dimension with category metadata.
+    primary_key: product_id
+    columns:
+      - name: product_id
+        data_type: integer
+        value_strategy: sequential_id
+      - name: product_name
+        data_type: text
+        value_strategy: product_name
+      - name: category
+        data_type: text
+        value_strategy: product_category
+      - name: unit_price
+        data_type: decimal
+        value_strategy: monetary_amount

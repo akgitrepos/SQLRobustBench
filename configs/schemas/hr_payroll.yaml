@@ -1,3 +1,87 @@
 schema_family: hr_payroll
 version: v1
 description: Employees, departments, salaries, and payroll records for personnel analytics.
+seed_hints:
+  - employee tenure reporting
+  - department compensation summaries
+  - payroll status tracking
+tables:
+  - name: departments
+    description: Department dimension table.
+    primary_key: department_id
+    columns:
+      - name: department_id
+        data_type: integer
+        value_strategy: sequential_id
+      - name: department_name
+        data_type: text
+        value_strategy: department_name
+      - name: cost_center
+        data_type: text
+        value_strategy: cost_center
+  - name: employees
+    description: Employee master table.
+    primary_key: employee_id
+    columns:
+      - name: employee_id
+        data_type: integer
+        value_strategy: sequential_id
+      - name: department_id
+        data_type: integer
+        value_strategy: foreign_key
+      - name: employee_name
+        data_type: text
+        value_strategy: full_name
+      - name: hire_date
+        data_type: date
+        value_strategy: date_recent_years
+      - name: employment_status
+        data_type: text
+        value_strategy: employment_status
+    foreign_keys:
+      - column: department_id
+        references_table: departments
+        references_column: department_id
+  - name: salaries
+    description: Current salary snapshot for employees.
+    primary_key: salary_id
+    columns:
+      - name: salary_id
+        data_type: integer
+        value_strategy: sequential_id
+      - name: employee_id
+        data_type: integer
+        value_strategy: foreign_key
+      - name: base_salary
+        data_type: decimal
+        value_strategy: salary_amount
+      - name: effective_date
+        data_type: date
+        value_strategy: date_recent_years
+    foreign_keys:
+      - column: employee_id
+        references_table: employees
+        references_column: employee_id
+  - name: payroll_runs
+    description: Payroll run outcomes by employee and period.
+    primary_key: payroll_id
+    columns:
+      - name: payroll_id
+        data_type: integer
+        value_strategy: sequential_id
+      - name: employee_id
+        data_type: integer
+        value_strategy: foreign_key
+      - name: pay_period
+        data_type: text
+        value_strategy: monthly_period
+      - name: net_pay
+        data_type: decimal
+        value_strategy: salary_amount
+      - name: payroll_status
+        data_type: text
+        value_strategy: payroll_status
+    foreign_keys:
+      - column: employee_id
+        references_table: employees
+        references_column: employee_id

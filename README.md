@@ -9,6 +9,15 @@ Current goals:
 - scaffold the Python package for schema, query, corruption, normalization, validation, deduplication, and export flows
 - prepare a reproducible path to a professional Hugging Face release
 
+## Getting started
+
+```bash
+python3 -m venv .venv
+source .venv/bin/activate
+pip install -r requirements.txt
+pytest
+```
+
 ## Repository layout
 
 - `docs/`: source-of-truth benchmark and policy documents

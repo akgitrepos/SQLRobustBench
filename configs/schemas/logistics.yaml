@@ -1,3 +1,83 @@
 schema_family: logistics
 version: v1
 description: Shipments, warehouses, carriers, and delivery events for operations analytics.
+seed_hints:
+  - carrier performance by region
+  - warehouse throughput summaries
+  - late delivery diagnostics
+tables:
+  - name: warehouses
+    description: Warehouse dimension and location metadata.
+    primary_key: warehouse_id
+    columns:
+      - name: warehouse_id
+        data_type: integer
+        value_strategy: sequential_id
+      - name: warehouse_name
+        data_type: text
+        value_strategy: facility_name
+      - name: region
+        data_type: text
+        value_strategy: region_name
+  - name: carriers
+    description: Carrier dimension table.
+    primary_key: carrier_id
+    columns:
+      - name: carrier_id
+        data_type: integer
+        value_strategy: sequential_id
+      - name: carrier_name
+        data_type: text
+        value_strategy: company_name
+      - name: service_level
+        data_type: text
+        value_strategy: shipping_service_level
+  - name: shipments
+    description: Shipment fact table with origin and carrier metadata.
+    primary_key: shipment_id
+    columns:
+      - name: shipment_id
+        data_type: integer
+        value_strategy: sequential_id
+      - name: warehouse_id
+        data_type: integer
+        value_strategy: foreign_key
+      - name: carrier_id
+        data_type: integer
+        value_strategy: foreign_key
+      - name: ship_date
+        data_type: date
+        value_strategy: date_recent_years
+      - name: promised_date
+        data_type: date
+        value_strategy: date_recent_years
+      - name: shipment_status
+        data_type: text
+        value_strategy: shipment_status
+    foreign_keys:
+      - column: warehouse_id
+        references_table: warehouses
+        references_column: warehouse_id
+      - column: carrier_id
+        references_table: carriers
+        references_column: carrier_id
+  - name: delivery_events
+    description: Event log for shipment state changes.
+    primary_key: event_id
+    columns:
+      - name: event_id
+        data_type: integer
+        value_strategy: sequential_id
+      - name: shipment_id
+        data_type: integer
+        value_strategy: foreign_key
+      - name: event_type
+        data_type: text
+        value_strategy: shipment_event_type
+      - name: event_timestamp
+        data_type: timestamp
+        value_strategy: timestamp_recent
+    foreign_keys:
+      - column: shipment_id
+        references_table: shipments
+        references_column: shipment_id

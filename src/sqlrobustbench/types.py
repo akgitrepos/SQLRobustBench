@@ -39,6 +39,59 @@ class SchemaFamilyConfig:
 
 
 @dataclass(slots=True)
+class ColumnSpec:
+    name: str
+    data_type: str
+    nullable: bool = False
+    description: str = ""
+    value_strategy: str = "generic"
+
+
+@dataclass(slots=True)
+class ForeignKeySpec:
+    column: str
+    references_table: str
+    references_column: str
+
+
+@dataclass(slots=True)
+class TableSpec:
+    name: str
+    description: str
+    primary_key: str
+    columns: list[ColumnSpec] = field(default_factory=list)
+    foreign_keys: list[ForeignKeySpec] = field(default_factory=list)
+
+
+@dataclass(slots=True)
+class SchemaDefinition:
+    schema_family: str
+    version: str
+    description: str
+    tables: list[TableSpec] = field(default_factory=list)
+    seed_hints: list[str] = field(default_factory=list)
+
+
+@dataclass(slots=True)
+class JoinEdge:
+    left_table: str
+    left_column: str
+    right_table: str
+    right_column: str
+
+
+@dataclass(slots=True)
+class GeneratedSchema:
+    schema_id: str
+    schema_family: str
+    version: str
+    description: str
+    tables: list[TableSpec] = field(default_factory=list)
+    join_graph: list[JoinEdge] = field(default_factory=list)
+    provenance: str = "manual_config_v1"
+
+
+@dataclass(slots=True)
 class DialectProfile:
     name: str
     role: str
