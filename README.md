@@ -2,12 +2,27 @@
 
 SQLRobustBench is a synthetic benchmark for SQL robustness tasks under explicit schema and validation constraints.
 
+Links:
+
+- GitHub: `https://github.com/akgitrepos/SQLRobustBench`
+- Hugging Face dataset: `https://huggingface.co/datasets/sigdelakshey/SQLRobustBench`
+
 It currently focuses on two benchmark families:
 
 - `SQLCorrupt`: invalid SQL detection, error typing, localization, and repair
 - `SQLNormalize`: SQL normalization and canonicalization under deterministic benchmark rules
 
 The project is built for reproducibility: queries are generated from structured programs, validated against schemas, deduplicated, split with leakage controls, and exported as release-ready records.
+
+## Dataset Summary
+
+SQLRobustBench evaluates SQL tasks that require more than straightforward generation:
+
+- generating valid clean SQL under schema constraints
+- detecting and repairing corrupted SQL
+- canonicalizing meaning-preserving SQL variants into deterministic targets
+
+The benchmark is intended for evaluation and robustness analysis, not for broad natural-language-to-SQL supervision claims.
 
 ## What is included
 
@@ -30,6 +45,12 @@ Current build summary:
 - `1312` repair rows
 - `565` canonicalization rows
 - zero exact, AST, semantic, and template-family leakage in the current split audit
+
+Published dataset assets:
+
+- `data/records.jsonl`
+- `manifest.json`
+- `code/` generation assets on the Hugging Face dataset repo
 
 Generated release artifacts are local build outputs and are intentionally ignored by git.
 
@@ -68,6 +89,15 @@ The exported dataset uses one JSON object per row. Core fields include:
 - `error_tags` and `corruption_recipe_id`: corruption metadata
 - `normalization_rules`: canonicalization rule trace
 - `split`: assigned benchmark split
+
+## Load the published dataset
+
+```python
+from datasets import load_dataset
+
+dataset = load_dataset("sigdelakshey/SQLRobustBench")
+print(dataset["train"][0])
+```
 
 ## Customize the dataset
 
@@ -110,6 +140,20 @@ Before publication, the intended review flow is:
 2. review `data/release/sqlrobustbench_v1/manifest.json`
 3. confirm split behavior, duplicate controls, and example quality
 4. finalize the dataset card and release metadata
+
+## Citation
+
+If you use SQLRobustBench, cite the repository and include the release manifest details.
+
+```bibtex
+@misc{sqlrobustbench2026,
+  title        = {SQLRobustBench: A Synthetic Benchmark for SQL Robustness},
+  author       = {Sigdel, Akshey},
+  year         = {2026},
+  howpublished = {GitHub and Hugging Face dataset repository},
+  url          = {https://github.com/akgitrepos/SQLRobustBench}
+}
+```
 
 ## Development checks
 

@@ -151,4 +151,14 @@ Source code and generation pipeline:
 
 ## Citation
 
-If you use this dataset, cite the dataset repository and include the release manifest details from `manifest.json`.
+If you use this dataset, cite the dataset and include the release manifest details from `manifest.json`.
+
+```bibtex
+@misc{sqlrobustbench2026,
+  title        = {SQLRobustBench: A Synthetic Benchmark for SQL Robustness},
+  author       = {Sigdel, Akshey},
+  year         = {2026},
+  howpublished = {Hugging Face dataset repository},
+  url          = {https://huggingface.co/datasets/sigdelakshey/SQLRobustBench}
+}
+```

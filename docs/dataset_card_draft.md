@@ -93,6 +93,18 @@ Splits are assigned with template-family and schema-family controls, then audite
 
 The benchmark is config-driven. Users can regenerate the corpus or create scaled variants by editing release configuration files such as `configs/release_2500.yaml`.
 
+## Citation
+
+```bibtex
+@misc{sqlrobustbench2026,
+  title        = {SQLRobustBench: A Synthetic Benchmark for SQL Robustness},
+  author       = {Sigdel, Akshey},
+  year         = {2026},
+  howpublished = {GitHub and Hugging Face dataset repository},
+  url          = {https://github.com/akgitrepos/SQLRobustBench}
+}
+```
+
 ## Release checklist before publication
 
 - final manual row review
