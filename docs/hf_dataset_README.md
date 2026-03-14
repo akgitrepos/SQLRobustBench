@@ -1,3 +1,19 @@
+---
+pretty_name: SQLRobustBench
+task_categories:
+  - text-generation
+  - text-classification
+language:
+  - sql
+tags:
+  - sql
+  - robustness
+  - benchmark
+  - synthetic
+size_categories:
+  - 1K<n<10K
+---
+
 # SQLRobustBench
 
 SQLRobustBench is a synthetic benchmark for SQL robustness under explicit schema, parsing, and logical validation constraints.
