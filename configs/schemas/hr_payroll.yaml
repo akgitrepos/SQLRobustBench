@@ -1,0 +1,3 @@
+schema_family: hr_payroll
+version: v1
+description: Employees, departments, salaries, and payroll records for personnel analytics.

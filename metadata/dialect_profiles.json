@@ -1,0 +1,7 @@
+{
+  "version": "v1",
+  "profiles": [
+    "ansi_like",
+    "postgres_like"
+  ]
+}

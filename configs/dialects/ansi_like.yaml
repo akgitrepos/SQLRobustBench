@@ -1,0 +1,17 @@
+name: ansi_like
+role: canonical
+notes:
+  - Conservative v1 dialect profile used for clean generation and canonical targets.
+supports:
+  - select
+  - from
+  - where
+  - group_by
+  - having
+  - order_by
+  - limit
+  - inner_join
+  - left_join
+restrictions:
+  - No window functions in v1.
+  - No CTEs in v1.

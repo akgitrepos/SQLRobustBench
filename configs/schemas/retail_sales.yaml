@@ -1,0 +1,3 @@
+schema_family: retail_sales
+version: v1
+description: Orders, customers, products, and payments for transactional analytics.

@@ -1,0 +1,9 @@
+{
+  "version": "v1",
+  "families": [
+    "parser-breaking",
+    "schema-breaking",
+    "logic-breaking",
+    "dialect-breaking"
+  ]
+}

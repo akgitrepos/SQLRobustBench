@@ -1,0 +1,61 @@
+benchmark:
+  name: SQLRobustBench
+  version: v1
+  release_stage: planning
+
+scope:
+  included_clauses:
+    - SELECT
+    - FROM
+    - WHERE
+    - GROUP_BY
+    - HAVING
+    - ORDER_BY
+    - LIMIT
+  joins:
+    - inner
+    - left
+  included_features:
+    - aliases
+    - nested_subqueries
+    - basic_aggregations
+    - arithmetic_expressions
+    - comparison_boolean_set_predicates
+  excluded_features:
+    - recursive_ctes
+    - window_functions
+    - optimizer_hints
+    - stored_procedures
+    - ddl
+    - dml
+
+tasks:
+  sqlcorrupt:
+    - validity_classification
+    - error_type_classification
+    - error_localization
+    - query_repair
+  sqlnormalize:
+    - canonicalization
+    - normalization
+    - equivalence_classification
+    - dialect_normalization
+
+dialects:
+  canonical: ansi_like
+  transfer:
+    - postgres_like
+
+configs:
+  - corrupt_easy
+  - corrupt_medium
+  - corrupt_hard
+  - normalize_surface
+  - normalize_structural
+  - normalize_dialect
+
+policies:
+  canonicalization: docs/canonicalization_policy.md
+  ambiguity: docs/ambiguity_policy.md
+  corruption_taxonomy: docs/corruption_taxonomy.md
+  split_policy: docs/split_policy.md

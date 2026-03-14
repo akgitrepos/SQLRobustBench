@@ -1,0 +1,3 @@
+schema_family: logistics
+version: v1
+description: Shipments, warehouses, carriers, and delivery events for operations analytics.

@@ -1,0 +1,16 @@
+name: postgres_like
+role: transfer
+notes:
+  - Secondary dialect profile for controlled dialect normalization and transfer tests.
+supports:
+  - select
+  - from
+  - where
+  - group_by
+  - having
+  - order_by
+  - limit
+  - inner_join
+  - left_join
+restrictions:
+  - Keep feature overlap high with `ansi_like` for v1.
