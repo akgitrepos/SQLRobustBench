@@ -51,6 +51,9 @@ tables:
       - name: promised_date
         data_type: date
         value_strategy: date_recent_years
+      - name: shipping_cost
+        data_type: decimal
+        value_strategy: monetary_amount
       - name: shipment_status
         data_type: text
         value_strategy: shipment_status
