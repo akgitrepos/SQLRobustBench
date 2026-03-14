@@ -117,7 +117,3 @@ Before publication, the intended review flow is:
 ruff check src tests scripts
 pytest
 ```
-
-## Status
-
-The project now has a functioning end-to-end generation pipeline. The main remaining work is publication polish: final documentation review, release packaging decisions, and remote publication to GitHub and Hugging Face.
