@@ -28,6 +28,7 @@ class BenchmarkRow:
     corruption_recipe_id: str | None = None
     target_ast_hash: str | None = None
     ambiguity_flag: bool = False
+    render_variant_id: str | None = None
     extra: dict[str, Any] = field(default_factory=dict)
 
 

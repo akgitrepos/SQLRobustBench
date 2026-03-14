@@ -50,6 +50,7 @@ def build_clean_row(
         split=split,
         num_joins=len(program.joins),
         nesting_depth=0,
+        render_variant_id="canonical",
     )
 
 
@@ -83,6 +84,7 @@ def build_corruption_row(
         nesting_depth=0,
         corruption_recipe_id=record.recipe_id,
         target_ast_hash=record.source_program_hash,
+        render_variant_id=record.operator_name,
         extra={"intended_failure_stage": record.intended_failure_stage},
     )
 
@@ -116,6 +118,7 @@ def build_normalization_row(
         num_joins=len(program.joins),
         nesting_depth=0,
         target_ast_hash=result.record.normalized_program_hash,
+        render_variant_id="normalized",
     )
 
 
