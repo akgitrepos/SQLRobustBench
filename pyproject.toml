@@ -11,6 +11,7 @@ requires-python = ">=3.11"
 dependencies = [
   "pydantic>=2.6,<3",
   "pyyaml>=6.0.1,<7",
+  "sqlglot>=25,<26",
 ]
 
 [project.optional-dependencies]
