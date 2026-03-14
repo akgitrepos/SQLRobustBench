@@ -46,6 +46,16 @@ class CorruptionRecord:
 
 
 @dataclass(slots=True)
+class NormalizationRecord:
+    source_sql: str
+    target_sql: str
+    rule_ids: list[str] = field(default_factory=list)
+    source_program_hash: str = ""
+    normalized_program_hash: str = ""
+    metadata: dict[str, Any] = field(default_factory=dict)
+
+
+@dataclass(slots=True)
 class SchemaFamilyConfig:
     schema_family: str
     version: str
