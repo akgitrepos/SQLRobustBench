@@ -1,8 +1,13 @@
 __pycache__/
 .pytest_cache/
 .ruff_cache/
+.coverage
+.mypy_cache/
 .venv/
 venv/
+build/
+dist/
+*.egg-info/
 *.pyc
 *.pyo
 *.pyd
