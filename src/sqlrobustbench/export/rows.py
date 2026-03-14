@@ -14,12 +14,13 @@ def _program_hash(program: QueryProgram) -> str:
     return stable_hash(asdict(program))
 
 
-def _semantic_hash(schema: GeneratedSchema, template_id: str, task: str) -> str:
+def _semantic_hash(schema: GeneratedSchema, template_id: str, task: str, program_hash: str) -> str:
     return stable_hash(
         {
             "schema_id": schema.schema_id,
             "template_id": template_id,
             "task": task,
+            "program_hash": program_hash,
         }
     )
 
@@ -33,6 +34,7 @@ def build_clean_row(
     config: str = "clean_reference",
 ) -> BenchmarkRow:
     sql = render_sql(program)
+    program_hash = _program_hash(program)
     return BenchmarkRow(
         id=row_id,
         config=config,
@@ -44,8 +46,8 @@ def build_clean_row(
         is_source_valid=True,
         complexity=estimate_complexity(program),
         template_id=program.template_id,
-        source_ast_hash=_program_hash(program),
-        semantic_hash=_semantic_hash(schema, program.template_id, "clean"),
+        source_ast_hash=program_hash,
+        semantic_hash=_semantic_hash(schema, program.template_id, "clean", program_hash),
         provenance=schema.provenance,
         split=split,
         num_joins=len(program.joins),
@@ -63,6 +65,8 @@ def build_corruption_row(
     split: str,
     config: str = "corrupt_medium",
 ) -> BenchmarkRow:
+    clean_program_hash = record.source_program_hash
+    corrupted_program_hash = record.corrupted_program_hash or clean_program_hash
     return BenchmarkRow(
         id=row_id,
         config=config,
@@ -74,8 +78,8 @@ def build_corruption_row(
         is_source_valid=False,
         complexity=estimate_complexity(program),
         template_id=program.template_id,
-        source_ast_hash=record.corrupted_program_hash or record.source_program_hash,
-        semantic_hash=_semantic_hash(schema, program.template_id, "repair"),
+        source_ast_hash=corrupted_program_hash,
+        semantic_hash=_semantic_hash(schema, program.template_id, "repair", clean_program_hash),
         provenance=schema.provenance,
         split=split,
         target_sql=record.target_sql,
@@ -98,6 +102,7 @@ def build_normalization_row(
     split: str,
     config: str = "normalize_structural",
 ) -> BenchmarkRow:
+    source_program_hash = result.record.source_program_hash
     return BenchmarkRow(
         id=row_id,
         config=config,
@@ -109,8 +114,8 @@ def build_normalization_row(
         is_source_valid=True,
         complexity=estimate_complexity(program),
         template_id=program.template_id,
-        source_ast_hash=result.record.source_program_hash,
-        semantic_hash=_semantic_hash(schema, program.template_id, "canonicalization"),
+        source_ast_hash=source_program_hash,
+        semantic_hash=_semantic_hash(schema, program.template_id, "canonicalization", source_program_hash),
         provenance=schema.provenance,
         split=split,
         target_sql=result.target_sql,

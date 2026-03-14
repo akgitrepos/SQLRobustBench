@@ -3,6 +3,7 @@ from __future__ import annotations
 from collections import defaultdict
 from dataclasses import dataclass
 
+from sqlrobustbench.hashing import stable_hash
 from sqlrobustbench.dedup.hashes import template_family_key
 from sqlrobustbench.dedup.leakage import LeakageReport, audit_split_leakage
 from sqlrobustbench.types import BenchmarkRow
@@ -27,24 +28,34 @@ def build_splits(
     rows: list[BenchmarkRow],
     *,
     validation_template_families: set[str] | None = None,
+    in_domain_template_families: set[str] | None = None,
     ood_schema_families: set[str] | None = None,
     ood_template_ids: set[str] | None = None,
     hard_complexity_to_ood: bool = False,
+    in_domain_eval_ratio: float = 0.2,
 ) -> SplitPlan:
     validation_template_families = validation_template_families or set()
+    in_domain_template_families = in_domain_template_families or set()
     ood_schema_families = ood_schema_families or set()
     ood_template_ids = ood_template_ids or set()
 
-    assigned_rows: list[BenchmarkRow] = []
+    grouped_rows: dict[str, list[BenchmarkRow]] = defaultdict(list)
     for row in rows:
+        grouped_rows[_split_group_key(row)].append(row)
+
+    assigned_rows: list[BenchmarkRow] = []
+    for group_key, group in grouped_rows.items():
         split = _choose_split(
-            row,
+            group[0],
+            group_key=group_key,
             validation_template_families=validation_template_families,
+            in_domain_template_families=in_domain_template_families,
             ood_schema_families=ood_schema_families,
             ood_template_ids=ood_template_ids,
             hard_complexity_to_ood=hard_complexity_to_ood,
+            in_domain_eval_ratio=in_domain_eval_ratio,
         )
-        assigned_rows.append(_replace_split(row, split))
+        assigned_rows.extend(_replace_split(row, split) for row in group)
 
     split_counts = _count_splits(assigned_rows)
     leakage_report = audit_split_leakage(assigned_rows)
@@ -74,10 +85,13 @@ def template_family_ids(rows: list[BenchmarkRow]) -> set[str]:
 def _choose_split(
     row: BenchmarkRow,
     *,
+    group_key: str,
     validation_template_families: set[str],
+    in_domain_template_families: set[str],
     ood_schema_families: set[str],
     ood_template_ids: set[str],
     hard_complexity_to_ood: bool,
+    in_domain_eval_ratio: float,
 ) -> str:
     family_key = template_family_key(row)
     if row.schema_family in ood_schema_families:
@@ -88,9 +102,16 @@ def _choose_split(
         return "test_ood"
     if family_key in validation_template_families:
         return "validation"
-    if row.task in {"repair", "canonicalization"}:
+    if family_key in in_domain_template_families:
+        return "test_in_domain"
+    bucket = int(stable_hash({"group_key": group_key})[:8], 16) % 100
+    if bucket < int(in_domain_eval_ratio * 100):
         return "test_in_domain"
     return "train"
+
+
+def _split_group_key(row: BenchmarkRow) -> str:
+    return template_family_key(row)
 
 
 def _replace_split(row: BenchmarkRow, split: str) -> BenchmarkRow:

@@ -16,6 +16,7 @@ def create_release_bundle(
     output_dir: str | Path,
     *,
     dataset_name: str = "SQLRobustBench",
+    stats: dict | None = None,
 ) -> dict[str, str]:
     root = Path(output_dir)
     data_path = write_rows_jsonl(rows, root / "data" / "records.jsonl")
@@ -25,6 +26,8 @@ def create_release_bundle(
         "data_file": str(data_path.relative_to(root)),
         "formats": ["jsonl"],
     }
+    if stats is not None:
+        manifest["stats"] = stats
     manifest_path = root / "manifest.json"
     manifest_path.parent.mkdir(parents=True, exist_ok=True)
     manifest_path.write_text(json.dumps(manifest, indent=2), encoding="utf-8")

@@ -1,0 +1,55 @@
+dataset:
+  name: SQLRobustBench
+  version: v1
+
+schemas:
+  - configs/schemas/retail_sales.yaml
+  - configs/schemas/hr_payroll.yaml
+  - configs/schemas/logistics.yaml
+
+generation:
+  target_total_rows: 2500
+  task_targets:
+    clean: 500
+    corrupt: 1200
+    normalize: 800
+  complexities:
+    - easy
+    - medium
+    - hard
+  templates:
+    easy:
+      - baseline_summary
+      - entity_listing
+      - dimension_slice
+      - recent_activity
+    medium:
+      - category_rollup
+      - carrier_rollup
+      - department_summary
+      - segment_aggregation
+    hard:
+      - cross_table_audit
+      - operations_breakdown
+      - finance_review
+      - entity_health_check
+  corruption_operators:
+    - missing_comma
+    - unknown_column
+    - invalid_join_condition
+    - missing_group_by
+  max_render_variants_per_semantic_group: 3
+  oversample_factor: 4
+  seed_start: 11
+  max_attempts: 40000
+
+splits:
+  validation_template_families: 3
+  in_domain_template_families: 2
+  in_domain_eval_ratio: 0.2
+  ood_schema_families:
+    - hr_payroll
+  ood_template_ids:
+    - finance_review
+    - entity_health_check
+  hard_complexity_to_ood: false
