@@ -32,6 +32,20 @@ class BenchmarkRow:
 
 
 @dataclass(slots=True)
+class CorruptionRecord:
+    recipe_id: str
+    operator_name: str
+    corruption_family: str
+    intended_failure_stage: str
+    source_sql: str
+    target_sql: str
+    error_tags: list[str] = field(default_factory=list)
+    source_program_hash: str = ""
+    corrupted_program_hash: str = ""
+    metadata: dict[str, Any] = field(default_factory=dict)
+
+
+@dataclass(slots=True)
 class SchemaFamilyConfig:
     schema_family: str
     version: str
